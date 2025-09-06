@@ -85,10 +85,10 @@
 
 		<!-- Đây là thư viện của Spring Session dùng để lưu session vào database (JDBC) thay vì lưu trên memory hoặc cookie mặc định.
 		Khi dùng dependency này, session của người dùng (bao gồm cả thông tin đăng nhập, remember-me, v.v.) sẽ được lưu vào bảng trong database (MySQL, PostgreSQL, v.v.). -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-jdbc</artifactId>
-		</dependency>
+		</dependency> -->
 
 
 

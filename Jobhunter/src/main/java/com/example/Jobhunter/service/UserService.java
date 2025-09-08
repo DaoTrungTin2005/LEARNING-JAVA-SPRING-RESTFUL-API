@@ -15,7 +15,6 @@ public class UserService {
 
     // ========================== LƯU USERS ========================
     public User handleCreateUser(User user){
-        user = this.userRepository.save(user);
-        return user;
+        return this.userRepository.save(user);
     }
 }

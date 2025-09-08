@@ -1,6 +1,8 @@
 package com.example.Jobhunter.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Jobhunter.domain.User;
@@ -14,16 +16,17 @@ public class UserController {
         this.userService = userService;
     }
     
-    @GetMapping("/user/create")
-    public String createNewUser(){
+    // @GetMapping("/user/create")
+    @PostMapping("/user/create")
+    public User createNewUser(@RequestBody User postmanser) {
 
-        User user = new User();
-        user.setEmail("Tin@gmail.com");
-        user.setName("Tin");
-        user.setPassword("12345");
+        // User user = new User();
+        // user.setEmail("Tin@gmail.com");
+        // user.setName("Tin");
+        // user.setPassword("12345");
 
-        this.userService.handleCreateUser(user);
+        User newUser = this.userService.handleCreateUser(postmanser);
 
-        return "create new user";
+        return newUser;
     }
 }

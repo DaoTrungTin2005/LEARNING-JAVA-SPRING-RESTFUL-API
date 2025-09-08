@@ -1,5 +1,7 @@
 package com.example.Jobhunter.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // ========================== TẠO USER MỚI ========================
     @PostMapping("/user")
     public User createNewUser(@RequestBody User postmanUser) {
 
@@ -31,10 +34,23 @@ public class UserController {
         return newUser;
     }
 
+    // ========================== XÓA USER THEO ID ========================
     @DeleteMapping("/user/{id}")
     public String deleteUser(@PathVariable("id") long id) {
         this.userService.handleDeleteUser(id);
         return "user deleted";
+    }
+
+    // ========================== LẤY USER THEO ID ========================
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable("id") long id) {
+        return this.userService.fetchUserById(id);
+    }
+
+    // ========================== LẤY TẤT CẢ USER ========================
+    @GetMapping("/user")
+    public List<User> getAllUsers() {
+        return this.userService.fetchAllUsers();
     }
 
 }

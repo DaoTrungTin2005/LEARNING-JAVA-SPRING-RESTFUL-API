@@ -17,19 +17,19 @@ public class UserService {
     }
 
     // ========================== LƯU USERS ========================
-    public User handleCreateUser(User user){
+    public User handleCreateUser(User user) {
         return this.userRepository.save(user);
     }
 
     // ========================== XÓA USERS ========================
-    public void handleDeleteUser(long id){
+    public void handleDeleteUser(long id) {
         this.userRepository.deleteById(id);
     }
 
     // ========================== LẤY USERS THEO ID ========================
-    public User fetchUserById(long id){
+    public User fetchUserById(long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             return userOptional.get();
         } else {
             return null;
@@ -37,7 +37,20 @@ public class UserService {
     }
 
     // ========================== LẤY TẤT CẢ USERS ========================
-    public List<User> fetchAllUsers(){
+    public List<User> fetchAllUsers() {
         return this.userRepository.findAll();
+    }
+
+    // ========================== CẬP NHẬT USERS THEO ID ========================
+    public User handleUpdateUser(User user) {
+        User currentUser = this.fetchUserById(user.getId());
+        if (currentUser != null) {
+            currentUser.setEmail(user.getEmail());
+            currentUser.setName(user.getName());
+            currentUser.setPassword(user.getPassword());
+
+            currentUser = this.userRepository.save(currentUser);
+        }
+        return currentUser;
     }
 }

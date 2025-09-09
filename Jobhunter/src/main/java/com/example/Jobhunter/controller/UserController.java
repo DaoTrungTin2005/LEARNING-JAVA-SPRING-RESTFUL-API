@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Jobhunter.domain.User;
 import com.example.Jobhunter.service.UserService;
+import com.example.Jobhunter.service.error.IdInvalidException;
 
 @RestController
 public class UserController {
@@ -37,9 +39,21 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
+    //========================= XỬ LÝ NGOẠI LỆ(Để ở đây là có lí do, sẽ giải thích sau) ========================
+
+    @ExceptionHandler(value = IdInvalidException.class)
+    public ResponseEntity<String> handleIdException(IdInvalidException idInvalidException) {
+        return ResponseEntity.badRequest().body(idInvalidException.getMessage());
+    }
+
     // ========================== XÓA USER THEO ID ========================
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
+
+        if (id >= 1500) {
+            throw new IdInvalidException("ID must be less than 1500");
+        }
+
         this.userService.handleDeleteUser(id);
         return ResponseEntity.status(HttpStatus.OK).body("users are deleted");
         // return ResponseEntity.ok("users are deleted");

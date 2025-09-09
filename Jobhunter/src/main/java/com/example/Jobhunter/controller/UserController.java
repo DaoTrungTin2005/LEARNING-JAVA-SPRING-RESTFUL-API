@@ -2,6 +2,8 @@ package com.example.Jobhunter.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +24,8 @@ public class UserController {
     }
 
     // ========================== TẠO USER MỚI ========================
-    @PostMapping("/user")
-    public User createNewUser(@RequestBody User postmanUser) {
+    @PostMapping("/users")
+    public ResponseEntity<User> createNewUser(@RequestBody User postmanUser) {
 
         // User user = new User();
         // user.setEmail("Tin@gmail.com");
@@ -32,35 +34,49 @@ public class UserController {
 
         User newUser = this.userService.handleCreateUser(postmanUser);
 
-        return newUser;
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     // ========================== XÓA USER THEO ID ========================
-    @DeleteMapping("/user/{id}")
-    public String deleteUser(@PathVariable("id") long id) {
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) {
         this.userService.handleDeleteUser(id);
-        return "user deleted";
+        return ResponseEntity.status(HttpStatus.OK).body("users are deleted");
+        // return ResponseEntity.ok("users are deleted");
     }
 
     // ========================== LẤY USER THEO ID ========================
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable("id") long id) {
-        return this.userService.fetchUserById(id);
-    }
-
-    // ========================== LẤY TẤT CẢ USER ========================
-    @GetMapping("/user")
-    public List<User> getAllUsers() {
-        return this.userService.fetchAllUsers();
-    }
-
-    //=========================== CẬP NHẬT USER THEO ID ========================
-    @PutMapping("/user")
-        public User updateUser(@RequestBody User user){
-            User userUpdate = this.userService.handleUpdateUser(user);
-            return userUpdate;
-
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
+        User fetchUser = this.userService.fetchUserById(id);
+        if (fetchUser != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(fetchUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
+    // ========================== LẤY TẤT CẢ USER ========================
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> fetchAllUsers = this.userService.fetchAllUsers();
+        if (fetchAllUsers != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(fetchAllUsers);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    //=========================== CẬP NHẬT USER THEO ID ========================
+    @PutMapping("/users")
+    public ResponseEntity<User> updateUser(@RequestBody User user){
+        User userUpdate = this.userService.handleUpdateUser(user);
+        if (userUpdate != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+    }
+}
 

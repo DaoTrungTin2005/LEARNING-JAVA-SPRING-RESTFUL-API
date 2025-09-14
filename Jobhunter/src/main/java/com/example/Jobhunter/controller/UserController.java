@@ -39,13 +39,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    //========================= XỬ LÝ NGOẠI LỆ(Để ở đây là có lí do, sẽ giải thích sau) ========================
-
-    @ExceptionHandler(value = IdInvalidException.class)
-    public ResponseEntity<String> handleIdException(IdInvalidException idInvalidException) {
-        return ResponseEntity.badRequest().body(idInvalidException.getMessage());
-    }
-
     // ========================== XÓA USER THEO ID ========================
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
@@ -81,9 +74,9 @@ public class UserController {
         }
     }
 
-    //=========================== CẬP NHẬT USER THEO ID ========================
+    // =========================== CẬP NHẬT USER THEO ID ========================
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         User userUpdate = this.userService.handleUpdateUser(user);
         if (userUpdate != null) {
             return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
@@ -93,4 +86,3 @@ public class UserController {
 
     }
 }
-

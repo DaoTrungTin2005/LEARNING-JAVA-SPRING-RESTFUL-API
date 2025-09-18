@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated()
 
             )
-            .formLogin(f -> f.permitAll())
+            .formLogin(f -> f.disable()) // Tắt form login
             // Bật session và nói với nó xài stateless trong khi đó mặc định nó là stateful
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

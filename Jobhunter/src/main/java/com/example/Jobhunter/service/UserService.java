@@ -53,4 +53,9 @@ public class UserService {
         }
         return currentUser;
     }
+
+    //========================= LẤY USERS THEO USERNAME (nhưng thực chất là theo email)========================
+    public User handleGetUserByUsername(String username) {
+        return this.userRepository.findByEmail(username);
+    }
 }

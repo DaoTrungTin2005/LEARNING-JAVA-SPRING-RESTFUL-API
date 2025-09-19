@@ -22,10 +22,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(c -> c.disable())
             .authorizeHttpRequests(
                 authz -> authz
                 .requestMatchers("/").permitAll()
-                .anyRequest().authenticated()
+                // .anyRequest().authenticated()
+                .anyRequest().permitAll()
 
             )
             .formLogin(f -> f.disable()) // Tắt form login

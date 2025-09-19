@@ -7,4 +7,5 @@ import com.example.Jobhunter.domain.User;
 public interface  UserRepository extends JpaRepository<User, Long> {
     User save(User user);
     
+    User findByEmail(String email);
 }

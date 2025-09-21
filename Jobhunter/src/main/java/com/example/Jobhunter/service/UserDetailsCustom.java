@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 
 // UserDetailsService Đây là interface mà Spring Security dùng để tìm user trong
 // hệ thống
-public class UserDetailCustom implements UserDetailsService {
+public class UserDetailsCustom implements UserDetailsService {
 
     private final UserService userService;
 
-    public UserDetailCustom(UserService userService) {
+    public UserDetailsCustom(UserService userService) {
         this.userService = userService;
     }
 
@@ -29,6 +29,10 @@ public class UserDetailCustom implements UserDetailsService {
         // cái username đó để thực chất đi tìm bằng email. ở UserService viết
         // this.userRepository.findByEmail(username);
         com.example.Jobhunter.domain.User user = this.userService.handleGetUserByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("Username/Passsword không hợp lệ");
+        }
 
         // Convert sang UserDetails mà Spring Security hiểu
         return new User(

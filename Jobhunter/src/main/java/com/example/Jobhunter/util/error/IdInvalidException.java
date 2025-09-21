@@ -1,4 +1,4 @@
-package com.example.Jobhunter.service.error;
+package com.example.Jobhunter.util.error;
 
 public class IdInvalidException extends Exception{
     public IdInvalidException(String message) {

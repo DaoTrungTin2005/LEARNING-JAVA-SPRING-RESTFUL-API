@@ -31,6 +31,12 @@
 	</properties>
 	<dependencies>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+
 	<!-- Thư viện cần thiết để khởi động một ứng dụng Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

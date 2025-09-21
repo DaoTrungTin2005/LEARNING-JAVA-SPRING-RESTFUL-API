@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.Jobhunter.domain.dto.LoginDTO;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class AuthController {
 
@@ -27,7 +29,7 @@ public class AuthController {
     // được dữ liệu đó
     // Nó nói với Spring rằng: lấy dữ liệu từ phần body của HTTP request (JSON, XML,
     // …) rồi map vào object Java.
-    public ResponseEntity<LoginDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
 
         // Nạp input gồm username và password vào Security
         // Tạo một object UsernamePasswordAuthenticationToken, đây là “vé” xác thực mà

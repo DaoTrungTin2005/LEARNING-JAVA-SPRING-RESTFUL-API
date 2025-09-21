@@ -17,6 +17,13 @@ import com.example.Jobhunter.domain.RestResponse;
 
 @RestControllerAdvice
 public class GlobalException {
+
+    // Đây là handler cho các exception thuộc nhóm business / authentication:
+    // IdInvalidException → khi ID không hợp lệ.
+    // UsernameNotFoundException → khi login mà không tìm thấy user.
+    // BadCredentialsException → khi login sai username/password.
+    // Nghĩa là khi logic nghiệp vụ hoặc login fail, sẽ vào đây.
+
     @ExceptionHandler(value = { IdInvalidException.class, UsernameNotFoundException.class,
             BadCredentialsException.class })
 
@@ -28,6 +35,11 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
+    // Đây là handler riêng cho lỗi validation (thường đến từ @Valid hoặc @NotBlank
+    // trong DTO như LoginDTO).
+    // Ví dụ: nếu bạn gửi Postman mà để trống username hoặc password, Spring sẽ ném
+    // ra MethodArgumentNotValidException, rồi handler này sẽ gom lỗi và trả JSON
+    // gọn đẹp.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> validationError(MethodArgumentNotValidException ex) {
 

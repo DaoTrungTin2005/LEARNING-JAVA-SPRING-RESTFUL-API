@@ -13,6 +13,14 @@ import com.example.Jobhunter.domain.RestResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+// @RestControllerAdvice
+// Nó giống như @ControllerAdvice, nhưng dành riêng cho REST API.
+// Có thể can thiệp vào response hoặc exception để format lại dữ liệu.
+
+// FormatRestResponse
+// Là interceptor cho mọi response từ controller.
+// Nếu success (200-399) → bọc response trong RestResponse.
+// Nếu error (>=400) → không bọc nữa, để GlobalException xử lý
 @RestControllerAdvice
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 

@@ -37,7 +37,7 @@ public class GlobalException {
 
     // Đây là handler riêng cho lỗi validation (thường đến từ @Valid hoặc @NotBlank
     // trong DTO như LoginDTO).
-    // Ví dụ: nếu bạn gửi Postman mà để trống username hoặc password, Spring sẽ ném
+    // Ví dụ: nếu gửi Postman mà để trống username hoặc password, Spring sẽ ném
     // ra MethodArgumentNotValidException, rồi handler này sẽ gom lỗi và trả JSON
     // gọn đẹp.
     @ExceptionHandler(MethodArgumentNotValidException.class)

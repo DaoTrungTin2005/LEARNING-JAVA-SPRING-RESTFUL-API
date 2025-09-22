@@ -1,6 +1,7 @@
 package com.example.Jobhunter.controller;
 
 import org.springframework.security.core.Authentication;
+import org.apache.naming.factory.ResourceLinkFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.Jobhunter.domain.dto.LoginDTO;
+import com.example.Jobhunter.domain.dto.RestLoginDTO;
 import com.example.Jobhunter.util.SecurityUtil;
 
 import jakarta.validation.Valid;
@@ -32,7 +34,7 @@ public class AuthController {
     // được dữ liệu đó
     // Nó nói với Spring rằng: lấy dữ liệu từ phần body của HTTP request (JSON, XML,
     // …) rồi map vào object Java.
-    public ResponseEntity<LoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<RestLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
 
         // Nạp input gồm username và password vào Security
         // Tạo một object UsernamePasswordAuthenticationToken, đây là “vé” xác thực mà
@@ -48,7 +50,12 @@ public class AuthController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         //create a token
-        this.securityUtil.createToken(authentication);
-        return ResponseEntity.ok().body(loginDTO);
+        String access_token = this.securityUtil.createToken(authentication);
+
+        // Đóng gói vào RestLoginDTO → Trả về response dạng JSON, với body chứa accessToken.
+
+        RestLoginDTO res = new RestLoginDTO();
+        res.setAccessToken(access_token);
+        return ResponseEntity.ok().body(res);
     }
 }

@@ -39,6 +39,14 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(status);
 
+        // RestResponse = cái “khuôn” chuẩn của API response.
+        // Đoạn if (body instanceof RestResponse) = check xem dữ liệu đã ở trong cái
+        // khuôn đó chưa, nếu rồi thì để nguyên, chưa thì wrap lại.
+        if (body instanceof RestResponse) {
+            // Case đã được format rồi
+            return body;
+        }
+
         if (status >= 400) {
             // Case error
             return body;

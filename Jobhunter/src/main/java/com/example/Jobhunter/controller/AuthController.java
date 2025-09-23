@@ -1,6 +1,7 @@
 package com.example.Jobhunter.controller;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.apache.naming.factory.ResourceLinkFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Jobhunter.domain.dto.LoginDTO;
 import com.example.Jobhunter.domain.dto.RestLoginDTO;
 import com.example.Jobhunter.util.SecurityUtil;
+import com.nimbusds.jose.proc.SecurityContext;
 
 import jakarta.validation.Valid;
 
@@ -44,15 +46,20 @@ public class AuthController {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsername(), loginDTO.getPassword());
 
-
         // Xac thực người dùng => cần viết hàm loadUserByUsername
-        //authenticate(authenticationToken) sẽ gọi tới service UserDetailsService.loadUserByUsername()
+        // authenticate(authenticationToken) sẽ gọi tới service
+        // UserDetailsService.loadUserByUsername()
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        //create a token
+        // create a token
         String access_token = this.securityUtil.createToken(authentication);
 
-        // Đóng gói vào RestLoginDTO → Trả về response dạng JSON, với body chứa accessToken.
+        // lưu authentication vào context → từ giờ trong request này, Spring biết user
+        // nào đang login.
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Đóng gói vào RestLoginDTO → Trả về response dạng JSON, với body chứa
+        // accessToken.
 
         RestLoginDTO res = new RestLoginDTO();
         res.setAccessToken(access_token);

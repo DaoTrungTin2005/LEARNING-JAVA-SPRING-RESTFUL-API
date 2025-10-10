@@ -63,10 +63,10 @@ public class SecurityConfiguration {
 
                 )
 
-                .exceptionHandling(
-                        exceptions -> exceptions
-                                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
-                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
+                // .exceptionHandling(
+                //         exceptions -> exceptions
+                //                 .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
+                //                 .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
 
                 .formLogin(f -> f.disable()) // Tắt form login
                 // Bật session và nói với nó xài stateless trong khi đó mặc định nó là stateful

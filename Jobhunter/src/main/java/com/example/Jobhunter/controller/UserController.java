@@ -1,7 +1,10 @@
 package com.example.Jobhunter.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Jobhunter.domain.User;
+import com.example.Jobhunter.domain.dto.ResultPaginationDTO;
 import com.example.Jobhunter.service.UserService;
 import com.example.Jobhunter.util.error.IdInvalidException;
 
@@ -71,13 +76,58 @@ public class UserController {
 
     // ========================== LẤY TẤT CẢ USER ========================
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> fetchAllUsers = this.userService.fetchAllUsers();
-        if (fetchAllUsers != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(fetchAllUsers);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+    // Trả về kiểu ResponseEntity<ResultPaginationDTO> → đây là wrapper để kèm
+    // status code (200, 400,...) và body.
+
+    // Nhận 3 tham số query:
+    // current: trang hiện tại (default = 1)
+    // size: số bản ghi mỗi trang (tùy chọn)
+    // pageSize: ưu tiên hơn size nếu có (tùy
+    public ResponseEntity<ResultPaginationDTO> getAllUsers(
+            @RequestParam(value = "current", defaultValue = "1") int current,
+            @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+
+        // Ưu tiên pageSize nếu có, rồi size, rồi default 10
+        // Xác định số bản ghi mỗi trang (finalSize)
+
+        // Nếu pageSize tồn tại và > 0 → dùng pageSize
+        // Else nếu size tồn tại và > 0 → dùng size
+        // Nếu cả hai đều không hợp lệ → mặc định là 10 bản ghi/trang
+        // Đây là cách ưu tiên tham số của client nhưng vẫn có default an toàn.
+        int finalSize = (pageSize != null && pageSize > 0) ? pageSize : (size != null && size > 0) ? size : 10;
+
+        // Validation
+        // Validation tham số
+        // current phải ≥ 1
+        // finalSize phải ≥ 1 và ≤ 100
+        // Nếu sai → trả về 400 Bad Request với DTO rỗng (có thể set thêm thông tin lỗi
+        // trong errorDto)
+        if (current < 1 || finalSize < 1 || finalSize > 100) {
+
+            ResultPaginationDTO errorDto = new ResultPaginationDTO();
+
+            return ResponseEntity.badRequest().body(errorDto);
         }
+
+        // Chú ý: Spring dùng 0-based page → trang 1 của client phải chuyển thành 0.
+        // finalSize là số bản ghi mỗi trang.
+        Pageable pageable = PageRequest.of(current - 1, finalSize);
+
+        // Gọi service để lấy DTO đầy đủ
+        // userService.fetchAllUsers(pageable) trả về ResultPaginationDTO chứa:
+        // danh sách user cho trang hiện tại
+        // metadata phân trang (page, pageSize, total, ...)
+        ResultPaginationDTO resultDto = this.userService.fetchAllUsers(pageable);
+
+        // Adjust meta nếu cần (Spring getNumber() là 0-based, client current từ 1)
+        if (resultDto != null && resultDto.getMeta() != null) {
+            resultDto.getMeta().setPage(current); // Override để match param client
+        }
+
+        // Luôn return 200 nếu gọi thành công, dù empty
+        return ResponseEntity.ok(resultDto);
     }
 
     // =========================== CẬP NHẬT USER THEO ID ========================

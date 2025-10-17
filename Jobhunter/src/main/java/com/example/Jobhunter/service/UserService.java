@@ -3,9 +3,15 @@ package com.example.Jobhunter.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.naming.spi.DirStateFactory.Result;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.Jobhunter.domain.User;
+import com.example.Jobhunter.domain.dto.Meta;
+import com.example.Jobhunter.domain.dto.ResultPaginationDTO;
 import com.example.Jobhunter.repository.UserRepository;
 
 @Service
@@ -37,8 +43,20 @@ public class UserService {
     }
 
     // ========================== LẤY TẤT CẢ USERS ========================
-    public List<User> fetchAllUsers() {
-        return this.userRepository.findAll();
+    public ResultPaginationDTO fetchAllUsers(Pageable pageable) {
+        Page<User> pageUser = this.userRepository.findAll(pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        Meta mt = new Meta();
+
+        mt.setPage(pageUser.getNumber() + 1);
+        mt.setPageSize(pageUser.getSize());
+
+        mt.setPages(pageUser.getTotalPages());
+        mt.setTotal(pageUser.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pageUser.getContent());
+        return rs;
     }
 
     // ========================== CẬP NHẬT USERS THEO ID ========================
@@ -54,7 +72,8 @@ public class UserService {
         return currentUser;
     }
 
-    //========================= LẤY USERS THEO USERNAME (nhưng thực chất là theo email)========================
+    // ========================= LẤY USERS THEO USERNAME (nhưng thực chất là theo
+    // email)========================
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByEmail(username);
     }

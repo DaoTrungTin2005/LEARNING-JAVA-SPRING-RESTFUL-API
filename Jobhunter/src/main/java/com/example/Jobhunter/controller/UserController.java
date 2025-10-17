@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,11 @@ import com.example.Jobhunter.domain.User;
 import com.example.Jobhunter.domain.dto.ResultPaginationDTO;
 import com.example.Jobhunter.service.UserService;
 import com.example.Jobhunter.util.error.IdInvalidException;
+import com.example.Jobhunter.util.annotation.ApiMessage;
 
 @RestController
+@RequestMapping("/api/v1")
+
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -34,6 +38,7 @@ public class UserController {
 
     // ========================== TẠO USER MỚI ========================
     @PostMapping("/users")
+    
     public ResponseEntity<User> createNewUser(@RequestBody User postmanUser) {
 
         // User user = new User();
@@ -76,6 +81,7 @@ public class UserController {
 
     // ========================== LẤY TẤT CẢ USER ========================
     @GetMapping("/users")
+    @ApiMessage("Lấy tất cả người dùng")
 
     // Trả về kiểu ResponseEntity<ResultPaginationDTO> → đây là wrapper để kèm
     // status code (200, 400,...) và body.

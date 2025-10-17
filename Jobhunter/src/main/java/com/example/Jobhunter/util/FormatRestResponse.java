@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.example.Jobhunter.domain.RestResponse;
+import com.example.Jobhunter.util.annotation.ApiMessage;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -53,7 +54,12 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
         } else {
             // Case success
             res.setData(body);
-            res.setMessage("Call API success");
+            ApiMessage apiMessage = returnType.getMethodAnnotation(ApiMessage.class);
+            if (apiMessage != null) {
+                res.setMessage(apiMessage.value());
+            } else {
+                res.setMessage("Call API success");
+            }
         }
 
         return res;

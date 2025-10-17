@@ -2,6 +2,8 @@ package com.example.Jobhunter.domain;
 
 import java.time.Instant;
 
+import com.example.Jobhunter.util.SecurityUtil;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,9 +35,16 @@ public class Company {
     private String createdBy;
     private String updatedBy;
 
+    // Được gọi tự động trước khi entity được lưu vào database (do annotation
+    // @PrePersist).
     @PrePersist
     public void handleBeforeCreateAt() {
-        this.createdBy = "test";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : ""; // trả ra ai tạo
         this.createdAt = Instant.now(); // trả ra thời gian tạo
+
+        // createdBy: ghi lại người nào đã tạo bản ghi → lấy từ getCurrentUserLogin(). (bên SecurityUtil).
+        // createdAt: ghi lại thời điểm tạo bản ghi → Instant.now() (UTC).
     }
 }
